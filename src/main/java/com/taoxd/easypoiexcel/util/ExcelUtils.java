@@ -5,6 +5,7 @@ import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.multipart.MultipartFile;
@@ -128,7 +129,7 @@ public class ExcelUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> importExcel(String filePath, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
+    public static <T> ExcelImportResult<T> importExcel(String filePath, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
         if (StringUtils.isBlank(filePath)) {
             return null;
         }
@@ -138,7 +139,7 @@ public class ExcelUtils {
         params.setNeedSave(true);
         params.setSaveUrl("/excel/");
         try {
-            return ExcelImportUtil.importExcel(new File(filePath), pojoClass, params);
+            return ExcelImportUtil.importExcelMore(new File(filePath), pojoClass, params);
         } catch (NoSuchElementException e) {
             throw new IOException("模板不能为空");
         } catch (Exception e) {
@@ -154,7 +155,7 @@ public class ExcelUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> importExcel(MultipartFile file, Class<T> pojoClass) throws IOException {
+    public static <T> ExcelImportResult<T> importExcel(MultipartFile file, Class<T> pojoClass) throws IOException {
         return importExcel(file, 0, 1, pojoClass);
     }
 
@@ -168,7 +169,7 @@ public class ExcelUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> importExcel(MultipartFile file, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
+    public static <T> ExcelImportResult<T> importExcel(MultipartFile file, Integer titleRows, Integer headerRows, Class<T> pojoClass) throws IOException {
         return importExcel(file, titleRows, headerRows, false, pojoClass);
     }
 
@@ -183,7 +184,7 @@ public class ExcelUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> importExcel(MultipartFile file, Integer titleRows, Integer headerRows, boolean needVerfiy, Class<T> pojoClass) throws IOException {
+    public static <T> ExcelImportResult<T> importExcel(MultipartFile file, Integer titleRows, Integer headerRows, boolean needVerfiy, Class<T> pojoClass) throws IOException {
         if (file == null) {
             return null;
         }
@@ -205,7 +206,7 @@ public class ExcelUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> importExcel(InputStream inputStream, Integer titleRows, Integer headerRows, boolean needVerfiy, Class<T> pojoClass) throws IOException {
+    public static <T> ExcelImportResult<T> importExcel(InputStream inputStream, Integer titleRows, Integer headerRows, boolean needVerfiy, Class<T> pojoClass) throws IOException {
         if (inputStream == null) {
             return null;
         }
@@ -216,7 +217,7 @@ public class ExcelUtils {
         params.setNeedSave(true);
         params.setNeedVerfiy(needVerfiy);
         try {
-            return ExcelImportUtil.importExcel(inputStream, pojoClass, params);
+            return ExcelImportUtil.importExcelMore(inputStream, pojoClass, params);
         } catch (NoSuchElementException e) {
             throw new IOException("excel文件不能为空");
         } catch (Exception e) {
